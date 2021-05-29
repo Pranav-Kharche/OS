@@ -1,0 +1,311 @@
+#Write a shell script to calculate simple interest.
+
+#!/bin/bash
+read -p "Enter principle amount=" p
+read -p "Enter rate=" r
+read -p "Enter year=" n
+
+si=`echo "$p*$r*$n/100" | bc`
+echo "Simple interest is= $si"
+----------------------------------------------------------------------------------
+
+#Write a shell script to calculate salary from given basic. 
+#Salary = basic + dp + da +hra +ma –pf 
+#basic – to be taken as input 
+#dp - 50 % of basic 
+#da - 35 % of (basic + dp)  
+#hra - 8 % of (basic + dp) 
+#ma - 3 % of (basic + dp) 
+
+#!/bin/bash
+read -p "Enter basic  salary=" basic
+dp=`echo "((50/100) * $basic)" | bc`
+da=`echo "((35/100) * ($basic + $dp))" | bc`
+hra=`echo "((8/100) * ($basic + $dp))" | bc`
+ma=`echo "((3/100) * ($basic + $dp))" | bc`
+pf=`echo "((10/100) * ($basic + $dp))" | bc`
+sal=`echo "$basic + $dp + $da + $hra + $ma - $pf" | bc`
+echo "Total Salary is=$sal" 
+--------------------------------------------------------------------------------
+
+#Simple Calculator
+
+#!/bin/bash
+echo "Type + for add, - for sub, x for mul. / for div"
+read -p "Enter two numbers= " n1 n2
+read -p "Enter choice= " ch
+case $ch in
++)  sum=`echo "$n1+$n2" | bc`
+    echo "$n1+$n2=$sum"
+    ;;
+-)  sub=`echo "$n1-$n2" | bc`
+    echo "$n1-$n2=$sub"
+    ;;
+x)  mul=`echo "$n1*$n2" | bc`
+    echo "$n1*$n2=$mul"
+    ;;
+/)  div=`echo "scale=2;$n1/$n2" | bc`
+    echo "$n1/$n2=$div"
+    ;;
+esac
+--------------------------------------------------------------------------------
+
+#Write a shell script to accept 2 numbers and display which number is greater
+
+#!/bin/bash
+read -p "Enter two number= " n1 n2
+if [ $n1 -gt $n2 ]
+then 
+   echo "$n1 is greater number."
+else
+   echo "$n2 is greater number."
+fi
+------------------------------------------------------------------------------
+
+#Create user , Delete user , Create group , delete Group using case
+
+#!/bin/bash
+echo "1. Create User"
+echo "2. Delete User"
+echo "3. Create Group"
+echo "4. Delete Group"
+read -p "Enter choice: " ch
+case $ch in
+1) echo "Enter user name to be created: " 
+   read name
+   sudo useradd $name
+   tail -n 3 /etc/passwd
+   ;;
+2) echo "Enter user name to be deleted: "
+   read del
+   sudo userdel $del
+   tail -n 3 /etc/passwd
+   ;;
+3) echo "Enter group name to be created: " 
+   read group
+   sudo groupadd $group
+   tail -n 3 /etc/group
+   ;;
+4) echo "Enter group name to be deleted: " 
+   read grpdel
+   sudo groupdel #grpdel
+   tail -n 3 /etc/group
+   ;;
+esac
+---------------------------------------------------------------------------------------
+
+#Write a script to find out String is palindrome or not.
+
+#!//bin/bash
+read -p "Enter number: " n
+temp=$n
+sum=0
+while [ $n -gt 0 ]
+do
+a=`echo "($n%10)" | bc`
+sum=`echo "($sum\*10+$a)" | bc`
+n=`echo "($n/10)" | bc`
+done
+if [ "$sum -eq $temp" ]
+then
+    echo "Number is palindrome"
+else
+    echo "Number is not palindrome"
+fi
+----------------------------------------------------------------------------------------
+
+#Write a shell script to accept 10 numbers and tell how many are +tive, -tive and zero.
+
+#!/bin/bash
+i=0
+p=0
+n=o
+z=0
+while [ $i -le 9 ]
+do
+   read -p "Enter number$i: " a[$i]
+if [ ${a[$i]} -gt 0 ]
+then
+     p=$(($p+1))
+elif [ ${a[$i]} -eq 0 ]
+then
+     z=$(($z+1))
+else
+     n=$((n+1))
+fi
+i=$((i+1))
+done
+
+echo -e "Positive=$p \n Negative=$n \n Zero=$z"
+----------------------------------------------------------------------------
+
+#Write a shell script to display the prime numbers from 1 to n 
+
+#!/bin/bash
+read -p  "Enter number :" n
+echo "Prime numbers from 1 to $n are: "
+m=2
+while [ $m -le $n ]
+do 
+flag=0 i=2
+while [ $i -le `expr $m / 2` ]
+do
+   if [ `expr $m % $i` -eq 0 ]
+then
+   flag=1
+   break
+fi
+i=`expr $i + 1`
+done
+if [ $flag -eq 0 ]
+then
+echo $m 
+fi
+m=`expr $m + 1`
+done
+-------------------------------------------------------------------
+
+#Write a shell script to create a menu driven program for adding, deletion or finding a record in a database. Database should have the field like rollno, name, semester and marks of three subjects. Last option of the menu should be to exit the menu. 
+
+#!/bin/bash
+echo "1.Add record"
+echo "2.Delete record"
+echo "3.Find record"
+echo "4.Exit "
+
+read -p "Enter choice (1 to 4):" ch
+case $ch in
+1) read -p "Enter Name: " name
+   read -p "Enter RollNo.: " rollno
+   read -p "Enter SemisterNo.: " sem
+   read -p "Total  marks: " marks
+   echo "$rollno $name $sem $marks">>record
+   cat record
+   ;;
+2) read -p "Enter name of student to delete record: " dfile
+   sed -i "/$dfile/d" record
+   cat record
+   ;;
+3) read -p "For finding record,Enter any student RollNo/Name: " ffile
+   grep -h "$ffile" record
+   ;;
+4) Exit 0
+   ;;
+
+esac
+------------------------------------------------------------------------------------------------
+
+#Write a scripts which copies the content of file1 to file2 without using cp command It should check If file has a read permissions if not it should print an error message. If file2 exits then it should ask the user whether he wants to overwrite it. 
+
+read -p "Enter file name: " file1
+if [ -r $file1 ]
+then 
+   read -p "Enter file name where you want to copy data: " file2
+if test -f $file2
+then 
+   read -p "You want to overwrite(y/n): " ch
+case $ch in
+y) cat $file1 > $file2
+     ;;
+n) exit
+     ;;
+esac
+fi
+else
+   echo "File is not readable."
+fi
+----------------------------------------------------------------------------------------
+
+#Write a shell scripts that delete all files in current directory with 0 byte. 
+
+#!/bin/bash
+echo -n "Current Working directory: "
+pwd
+echo -n "Files with size 0 in- "
+pwd
+find * -size 0
+read -p "Do you want to delete above files(y/n); " del
+case $del in
+y) find * -size 0 -delete
+   echo "Files with size 0 are deleted."
+   echo -n "Listing"
+   pwd
+   ls
+   ;;
+n) echo -n "Listing"
+   pwd
+   ls
+   ;;
+esac 
+-------------------------------------------------------------------------------------
+
+//Create Child process  using fork()
+
+#include<stdio.h>
+#include<sys/types.h>
+#include<unistd.h>
+
+int main()
+{
+  pid_t p;
+  p=fork();
+  if(p==-1)
+  {
+    printf("Error while calling fork.\n");
+  }
+  if(p==0)
+  {
+    printf("In Child Process\n");
+  }
+  else
+  {
+    printf("In Parent Process\n");
+  }
+  return 0;
+  
+}
+-------------------------------------------------------------
+
+//Create orphan process
+
+#include<stdio.h>
+#include<sys/types.h>
+#include<unistd.h>
+
+int main()
+{
+  int pid=fork();
+
+  if(pid>0)
+  { 
+    exit(0);
+  }
+  else if(pid==0)
+  {
+   sleep(120);
+  }
+  return 0;
+}
+-----------------------------------------------------------
+
+//Create Zombie process
+
+#include<stdio.h>
+#include<sys/types.h>
+#include<unistd.h>
+
+int main()
+{
+  int pid=fork();
+
+  if(pid>0)
+  {
+    sleep(120);
+  }
+  else
+  {
+    exit(0);
+  }
+  return 0;
+}
+-------------------------------------------------------------
